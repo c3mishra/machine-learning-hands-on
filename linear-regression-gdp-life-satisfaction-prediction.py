@@ -42,3 +42,23 @@ model.fit(X, y)
 
 new_X = [[33442.8]]
 print(model.predict(new_X))
+
+print('model coefficient(slope):', model.coef_)
+print('model intercept(bias): ', model.intercept_)
+
+
+# Generate points for regression line
+X_new = np.linspace(X.min(), X.max(), 100).reshape(100, 1)
+# print(X_new)
+y_predict = model.predict(X_new)
+# print(y_predict)
+
+# Plot scatter + regression line
+plt.scatter(X, y, color="blue", label="Data points")
+plt.plot(X_new, y_predict, color="red", linewidth=2, label="Regression line")
+
+plt.xlabel("GDP per capita (USD)")
+plt.ylabel("Life satisfaction")
+plt.legend()
+plt.grid(True)
+plt.show()

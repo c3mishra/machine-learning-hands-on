@@ -70,3 +70,59 @@ housing = train_set_stratify.copy()
 
 corr_matrix = housing.corr(numeric_only = True)
 print(corr_matrix["median_house_value"].sort_values(ascending = False))
+
+# now lets clean and trasform data
+# there are below trasformations we will perform
+# fix missing values in numeric features
+# convert non numeric values to numeric
+
+# lets split housing and housing_labels first
+housing = train_set_stratify.drop("median_house_value", axis = 1)
+housing_labels = train_set_stratify["median_house_value"].copy()
+
+from sklearn.impute import SimpleImputer
+imputer = SimpleImputer(strategy = "median") 
+# startegy can be median, mean, most_frequent or (constant, fill_value=<value>)
+housing_num = housing.select_dtypes(include = [np.number])
+
+imputer.fit(housing_num)
+
+X = imputer.transform(housing_num)
+
+housing_imputed = pd.DataFrame(X, columns = housing_num.columns, index = housing_num.index)
+print(housing_imputed.head())
+
+# use one hot encodig to convert text data to numeric
+
+from sklearn.preprocessing import OneHotEncoder
+# there is also OrdinalEncoder which assigns numeric values to text data
+housing_cat = housing[["ocean_proximity"]]
+cat_encoder = OneHotEncoder(sparse_output = False)
+housing_cat_onehot = cat_encoder.fit_transform(housing_cat)
+print(housing_cat_onehot)
+
+# full piepline for data cleaning and trasformation
+
+from sklearn.compose import make_column_transformer, make_column_selector
+from sklearn.pipeline import make_pipeline
+from sklearn.impute import SimpleImputer
+from sklearn.preprocessing import OneHotEncoder, StandardScaler
+
+housing_num_pipeline = make_pipeline(SimpleImputer(strategy = "median"), StandardScaler())
+housing_cat_pipeline = make_pipeline(SimpleImputer(strategy = "most_frequent"), OneHotEncoder(sparse_output = False))
+
+# The startegy to fill missing data can be median, mean, most_frequent, constant - fill_value
+# other types of imputer - KNNImputer, IterativeImputer
+# other types of scaler MinMaxScaler
+
+housing_num_column_selector = make_column_selector(dtype_include = np.number)
+housing_cat_column_selector = make_column_selector(dtype_include = object)
+
+preprocessing = make_column_transformer(
+    (housing_num_pipeline, housing_num_column_selector),
+    (housing_cat_pipeline, housing_cat_column_selector)
+)
+
+housing_preprocessed = preprocessing.fit_transform(housing)
+housing_df = pd.DataFrame(housing_preprocessed, columns = preprocessing.get_feature_names_out())
+print(housing_df.info())

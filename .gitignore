@@ -32,3 +32,6 @@ Thumbs.db
 *.xlsx
 *.json
 !requirements.txt
+
+# Datasets folder
+datasets/

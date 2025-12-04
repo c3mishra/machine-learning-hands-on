@@ -25,6 +25,12 @@ An end-to-end machine learning project that predicts median house prices in Cali
   - Numerical feature scaling with StandardScaler
   - Categorical encoding with OneHotEncoder
   - Automated column selection and transformation
+- **Model training and evaluation**:
+  - Linear Regression with RMSE evaluation
+  - Decision Tree Regressor
+  - Random Forest Regressor
+  - Cross-validation with 10-fold CV for robust performance assessment
+  - Model comparison using RMSE metrics
 
 ### Requirements
 
@@ -83,6 +89,10 @@ Both life satisfaction scripts will:
 - Data visualization and exploratory data analysis
 - **Linear Regression**: Simple linear model for prediction
 - **K-Nearest Neighbors**: Non-parametric regression using 3 nearest neighbors
-- **End-to-End ML Pipeline**: Complete workflow from data acquisition to preprocessing
+- **Decision Tree Regressor**: Non-linear regression using decision trees
+- **Random Forest Regressor**: Ensemble method combining multiple decision trees
+- **End-to-End ML Pipeline**: Complete workflow from data acquisition to model evaluation
 - **Data Preprocessing**: Handling missing values, feature scaling, and encoding
+- **Cross-Validation**: 10-fold cross-validation for robust model assessment
+- **Model Comparison**: RMSE-based evaluation across multiple algorithms
 - Comparison of different ML approaches on multiple datasets

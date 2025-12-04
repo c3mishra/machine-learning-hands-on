@@ -126,3 +126,41 @@ preprocessing = make_column_transformer(
 housing_preprocessed = preprocessing.fit_transform(housing)
 housing_df = pd.DataFrame(housing_preprocessed, columns = preprocessing.get_feature_names_out())
 print(housing_df.info())
+
+
+# lets select and train a model now
+
+from sklearn.linear_model import LinearRegression
+
+lin_reg = make_pipeline(preprocessing, LinearRegression())
+lin_reg.fit(housing, housing_labels)
+
+housing_predictions = lin_reg.predict(housing)
+
+print(housing_predictions[:5].round(-2))
+print(housing_labels.iloc[:5].values)
+
+# find root mean suqared eroor
+from sklearn.metrics import root_mean_squared_error
+lin_rmse = root_mean_squared_error(housing_labels, housing_predictions)
+print(lin_rmse)
+
+# use cross validation
+from sklearn.model_selection import cross_val_score
+lin_rmses = -cross_val_score(lin_reg, housing, housing_labels, scoring = "neg_root_mean_squared_error", cv = 10)
+
+print(pd.Series(lin_rmses).describe())
+
+# lets evaluate other models and compare
+
+from sklearn.tree import DecisionTreeRegressor
+from sklearn.ensemble import RandomForestRegressor
+
+tree_reg = make_pipeline(preprocessing, DecisionTreeRegressor(random_state = 42))
+forest_reg = make_pipeline(preprocessing, RandomForestRegressor(random_state = 42))
+
+tree_rmses = -cross_val_score(tree_reg, housing, housing_labels, scoring = "neg_root_mean_squared_error", cv = 10)
+forest_rmses = -cross_val_score(forest_reg, housing, housing_labels, scoring = "neg_root_mean_squared_error", cv = 10)
+
+print(pd.Series(tree_rmses).describe())
+print(pd.Series(forest_rmses).describe())
